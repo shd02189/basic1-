@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <!-- Webpage Title -->
+    <title>내가 가장 좋아하는 회사는?</title>
+    <meta property="og:title" content="내가 가장 좋아하는 회사는?"/>
+    <meta property="og:description" content="내가 가장 좋아하는 회사를 알려주세요!"/>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#reviews-box").html("");
+            showReview();
+        });
+
+
+        function makeReview() {
+            let name = $('#name').val()
+            let industry = $('#industry').val()
+            let product = $('#product').val()
+            let link = $('#link').val()
+            let comment = $('#comment').val()
+
+            if (name == '', industry == '', product == '', link == '', comment == '') {
+                alert('입력하세요!');
+                exit;
+            } else {
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/review",
+                data: {
+                    name_give: name,
+                    industry_give: industry,
+                    product_give: product,
+                    link_give: link,
+                    comment_give: comment
+                },
+                success: function (response) {
+                    alert(response["msg"]);
+                    window.location.reload();
+                }
+            })
+        }
+
+        function showReview() {
+            $.ajax({
+                type: "GET",
+                url: "/review",
+                data: {},
+                success: function (response) {
+                    let reviews = response['all_reviews']
+                    for (let i = 0; i < reviews.length; i++) {
+                        let name = reviews[i]['name']
+                        let industry = reviews[i]['industry']
+                        let product = reviews[i]['product']
+                        let link = reviews[i]['link']
+                        let comment = reviews[i]['comment']
+
+                        let temp_html = `<tr>
+                                <th scope="col">${name}</th>
+                                <th scope="col">${industry}</th>
+                                <th scope="col">${product}</th>
+                                <th scope="col"><a href="${link}">${link}</a></th>
+                                <th scope="col">${comment}</th>
+                            </tr>`
+                        $('#reviews-box').append(temp_html)
+                    }
+                }
+            })
+        }
+    </script>
+
+    <style type="text/css">
+        * {
+            font-family: "Do Hyeon", sans-serif;
+        }
+
+        h1,
+        h5 {
+            display: inline;
+        }
+
+        .container {
+            width: 1000px;
+            height: 400px;
+            background-postion: center;
+            background-size: cover;
+        }
+
+        .info {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .review {
+            text-align: center;
+        }
+
+        .reviews {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <img src="https://www.purevacations.com/wp-content/uploads/2019/08/Florence-1024x683.jpg"
+         class="img-fluid" alt="Responsive image">
+    <div class="info">
+        <h1>가장 좋아하는 회사에 대해 말해주세요.</h1>
+        <p>본인이 가장 좋아하는 회사가 어디인지, 그 이유가 무엇인지 나누어주세요!</p>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">회사 이름</span>
+            </div>
+            <input type="text" class="form-control" id="name">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="industry">어느 산업</label>
+            </div>
+            <select class="custom-select" id="industry">
+                <option selected>산업을 선택하세요.</option>
+                <option>금융/지주</option>
+                <option>제조</option>
+                <option>도소매</option>
+                <option>정보통신</option>
+                <option>건설,부동산</option>
+                <option>과학기술 서비스</option>
+                <option>교육</option>
+                <option>예술</option>
+                <option>기타</option>
+            </select>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">파는 것은</span>
+            </div>
+            <input type="text" class="form-control" id="product">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">소개 링크</span>
+            </div>
+            <input type="text" class="form-control" id="link">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">좋은 이유</span>
+            </div>
+            <textarea class="form-control" id="comment"
+                      cols="30"
+                      rows="5" placeholder="140자까지 입력할 수 있습니다."></textarea>
+        </div>
+        <div class="review">
+            <button onclick="makeReview()" type="button" class="btn btn-primary">작성하기</button>
+        </div>
+    </div>
+    <div class="reviews">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">회사 이름</th>
+                <th scope="col">어느 산업</th>
+                <th scope="col">파는 것은</th>
+                <th scope="col">소개 링크</th>
+                <th scope="col">좋은 이유</th>
+
+            </tr>
+            </thead>
+            <tbody id="reviews-box">
+            <tr>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+
+</html>
